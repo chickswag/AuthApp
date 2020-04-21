@@ -4,7 +4,7 @@ namespace App\Domain\Model;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface
+class User extends UserInterface
 {
     /**
      * @var string

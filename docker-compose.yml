@@ -4,7 +4,17 @@ networks:
   symfony:
 
 services:
-
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    volumes:
+    - ./src:/var/www/html
+    ports:
+    - '9000:9000'
+    networks:
+      - symfony
 
   nginx:
     image: nginx:stable-alpine
@@ -12,37 +22,25 @@ services:
     ports:
     - '8088:80'
     volumes:
-      - ./src:/var/www/html
-      - ./nginx/default.conf:/etc/ngix/conf.d/default.conf
-    depends_on:
-      - php
+    -  ./src:/var/www/html
+    - ./nginx/default.conf:/etc/ngix/conf.d/default.conf
+
   postgresql:
     depends_on:
       - php
     image: 'bitnami/postgresql:latest'
-    container_name: symfony-oauth2-server-postgres
     ports:
       - '5432:5432'
     volumes:
       - /path/to/postgresql-persistence/conf/:/bitnami/postgresql/conf/
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - POSTGRESQL_USERNAME=root
-      - POSTGRESQL_PASSWORD=Abc@123
-      - POSTGRESQL_DATABASE=AuthApp
-  webserver:
-    image: nginx:stable-alpine
-    ports:
-      - "8080:80"
+      - ./src/default.conf:/etc/ngix/conf.d/default.conf
 
-  php:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: php
-    volumes:
-      - ./src:/var/www/html
+  authapp:
+    image: 'bitnami/symfony:1'
     ports:
-      - '9000:9000'
-    networks:
-      - symfony
+      - '5432'
+    volumes:
+      - '.:/app'
+
+
