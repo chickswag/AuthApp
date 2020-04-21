@@ -22,7 +22,7 @@ services:
     ports:
     - '8088:80'
     volumes:
-    -  ./src:/var/www/html
+    - ./src:/var/www/html
     - ./nginx/default.conf:/etc/ngix/conf.d/default.conf
 
   postgresql:
@@ -32,15 +32,18 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - /path/to/postgresql-persistence/conf/:/bitnami/postgresql/conf/
+      - ./database.env
     environment:
-      - ./src/default.conf:/etc/ngix/conf.d/default.conf
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=Abc@123
+      - POSTGRESQL_DATABASE=AuthApp
 
-  authapp:
-    image: 'bitnami/symfony:1'
-    ports:
-      - '5432'
-    volumes:
-      - '.:/app'
+#  authapp:
+#    image: 'bitnami/symfony:1'
+#    ports:
+#      - '5432'
+#    volumes:
+#      - '.:/app'
 
 
